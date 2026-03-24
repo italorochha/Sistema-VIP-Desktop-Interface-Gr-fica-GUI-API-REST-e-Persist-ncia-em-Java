@@ -1,0 +1,24 @@
+ VIP Desktop System: GUI, REST API, and Database (SQLite)
+
+This is a **Full-Stack Desktop** project built entirely in **Java**. It demonstrates the end-to-end integration of a real-world application: from the Graphical User Interface (Front-end), through business rules and external API consumption (Back-end), to structured persistence in a relational database.
+
+Key Features
+* **Graphical User Interface (GUI):** Built natively with **Java Swing** (`JFrame`, `JLabel`, `JTextField`, `JButton`), moving away from the terminal to provide a fluid and interactive User Experience (UX).
+* **External REST API Consumption:** Uses the modern `java.net.http.HttpClient` to perform real HTTP requests to the **ViaCEP** servers. It processes **JSON** data to dynamically autocomplete addresses, extracting information through advanced String manipulation (`.split()`).
+* **Relational Database (SQLite):** Upgrades from simple text file logging to an embedded structured database. It uses the **JDBC** driver to establish secure connections and execute DDL (`CREATE TABLE`) and DML (`INSERT INTO`) commands.
+* **Data Security:** Implementation of `PreparedStatement` in database transactions to ensure data integrity and prevent vulnerabilities such as SQL Injection.
+
+  Architecture and Learnings
+The system was architected to serve as a practical software engineering portfolio, highlighting:
+1. **Event-Driven Programming:** Capturing and handling asynchronous user events (`ActionListener`).
+2. **System Integration:** The ability to make Java communicate seamlessly with the internet (HTTP) and the hard drive (I/O and SQL) within the same execution flow.
+3. **Exception Handling:** Strategic use of `try/catch` blocks to shield the application against internet outages or database driver connection failures.
+
+  Technologies Used
+* **Language:** Java (JDK 11+)
+* **Front-end:** Java Swing & AWT
+* **Integration:** `java.net.http` (REST APIs)
+* **Database:** SQLite and `java.sql` (JDBC)
+
+---
+*Developed by Italo Rocha de Almeida Ferreira - Software Engineering Student*
