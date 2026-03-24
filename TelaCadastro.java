@@ -1,15 +1,16 @@
 import java.awt.event.*;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import javax.swing.*;
 
 public class TelaCadastro {
     public static void main(String[] args) {
-        JFrame janela = new JFrame("Sistema VIP Ultimate");
+        JFrame janela = new JFrame("Sistema VIP Ultimate - Edição Banco de Dados");
         janela.setSize(400, 400);
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         janela.setLayout(null);
@@ -25,12 +26,12 @@ public class TelaCadastro {
         rotuloCEP.setBounds(20, 160, 200, 30);
         JTextField campoCEP = new JTextField();
         campoCEP.setBounds(20, 190, 150, 30);
-        JButton botaoAdicionar = new JButton("Salvar Convidado");
+        JButton botaoAdicionar = new JButton("Salvar no Banco");
         botaoAdicionar.setBounds(20, 250, 150, 40);
         botaoAdicionar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String nome = campoNome.getText();
-                String idade = campoIdade.getText();
+                String idadeString = campoIdade.getText();
                 String cep = campoCEP.getText();
                 String enderecoFormatado = "Endereço não encontrado";
                 try {
@@ -47,20 +48,27 @@ public class TelaCadastro {
                     System.out.println("Erro de conexão ou CEP inválido.");
                 }
                 try {
-                    FileWriter arquivo = new FileWriter("lista_vip.txt", true);
-                    PrintWriter gravador = new PrintWriter(arquivo);
-                    gravador.println("VIP: " + nome + " | " + idade + " anos | Casa: " + enderecoFormatado);
-                    gravador.close();
-                } catch (Exception erroArquivo) {
-                    System.out.println("Erro ao salvar no arquivo.");
+                    String urlBanco = "jdbc:sqlite:banco_vip.db";
+                    Connection conexao = DriverManager.getConnection(urlBanco);
+                    String sql = "INSERT INTO convidados (nome, idade, endereco) VALUES (?, ?, ?)";
+                    PreparedStatement comando = conexao.prepareStatement(sql);
+                    comando.setString(1, nome);
+                    comando.setInt(2, Integer.parseInt(idadeString));
+                    comando.setString(3, enderecoFormatado);
+                    comando.executeUpdate();
+                    conexao.close();
+
+                } catch (Exception erroBanco) {
+                    System.out.println("❌ Erro no Banco: " + erroBanco.getMessage());
                 }
-    String mensagemFinal = "✅ Cadastrado com Sucesso!\n\nNome: " + nome + "\nIdade: " + idade + " anos\nEndereço: " + enderecoFormatado;
-    JOptionPane.showMessageDialog(null, mensagemFinal);
+                String mensagemFinal = "✅ Salvo no SQLite com Sucesso!\n\nNome: " + nome + "\nIdade: " + idadeString + " anos\nEndereço: " + enderecoFormatado;
+                JOptionPane.showMessageDialog(null, mensagemFinal);
                 campoNome.setText("");
                 campoIdade.setText("");
                 campoCEP.setText("");
             }
         });
+
         janela.add(rotuloNome);
         janela.add(campoNome);
         janela.add(rotuloIdade);
@@ -68,6 +76,7 @@ public class TelaCadastro {
         janela.add(rotuloCEP);
         janela.add(campoCEP);
         janela.add(botaoAdicionar);
+
         janela.setVisible(true);
     }
 }
